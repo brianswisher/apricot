@@ -1,0 +1,12 @@
+{
+  "name": "apricot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./ '/size ac:L people:L risk:L impact:L complex:L test:L'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
