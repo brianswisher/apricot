@@ -86,8 +86,12 @@ function insertAfter(newNode, referenceNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
-const d = document.createElement('div'); d.innerHTML = `${point(config())} points`
+window.APRICOT = function() {
+  const d = document.createElement('div'); d.innerHTML = `${point(config())} points`
 
-insertAfter(d, getFirstHeaderWithClass(args[0]))
+  insertAfter(d, getFirstHeaderWithClass(args[0]))
+}
+
+window.APRICOT()
 
 })(document)
