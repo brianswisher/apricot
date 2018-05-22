@@ -82,11 +82,21 @@ function getFirstHeaderWithClass (doc) {
   return header
 }
 
-function insertAfter(newNode, referenceNode) {
+function insertAfter (newNode, referenceNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
-window.APRICOT = function() {
+function decorate (d, fitContent) {
+  d.style.padding = '2px'
+  d.style.display = 'inline-block'
+  d.style.marginRight = '4px'
+  d.style.backgroundColor = 'green'
+  d.style.color = 'white'
+  d.style.textAlign = 'center'
+  if (fitContent) d.style.height = 'fit-content'
+}
+
+function mkDetailDiv (target) {
   const oldD = document.getElementById('APRICOT')
 
   if (oldD) {
@@ -96,32 +106,38 @@ window.APRICOT = function() {
   const d = document.createElement('div')
 
   d.id = 'APRICOT'
+  decorate(d, true)
   d.innerHTML = `${point(config())} points`
 
-  const header = getFirstHeaderWithClass(args[0])
-  const headerText = header.innerText
+  insertAfter(d, target)
+}
 
-  insertAfter(d, header)
-
-  const result = document.querySelector(`[data-tooltip="${headerText}"]`)
-  const resultId = `ar_${headerText.split(' ').join('_')}`
+function mkResultDiv (target) {
+  const targetText = target.innerText
+  const selectorText = targetText.split('"').shift()
+  const result = document.querySelector(`[data-tooltip^="${selectorText}"]`)
+  const resultId = `id_${escape(targetText)}`
   const oResult = document.getElementById(resultId)
 
   if (oResult) {
     oResult.parentNode.removeChild(oResult)
   }
 
-  const dR = document.createElement('div')
+  const d = document.createElement('div')
 
-  dR.id = resultId
-  dR.style.padding = '2px'
-  dR.style.display = 'inline-block'
-  dR.style.marginRight = '4px'
-  dR.style.backgroundColor = 'green'
-  dR.style.color = 'white'
-  dR.innerHTML = `${point(config())}p`
+  d.id = resultId
+  decorate(d)
+  d.innerHTML = `${point(config())}p`
 
-  result.parentNode.insertBefore(dR, result)
+  result.parentNode.insertBefore(d, result)
+}
+
+window.APRICOT = function() {
+  const header = getFirstHeaderWithClass(args[0])
+
+  mkDetailDiv(header)
+
+  mkResultDiv(header)
 }
 
 window.APRICOT()
