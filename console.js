@@ -87,7 +87,16 @@ function insertAfter(newNode, referenceNode) {
 }
 
 window.APRICOT = function() {
-  const d = document.createElement('div'); d.innerHTML = `${point(config())} points`
+  const oldD = document.getElementById('APRICOT')
+
+  if (oldD) {
+    oldD.parentNode.removeChild(oldD)
+  }
+
+  const d = document.createElement('div')
+
+  d.id = 'APRICOT'
+  d.innerHTML = `${point(config())} points`
 
   insertAfter(d, getFirstHeaderWithClass(args[0]))
 }
