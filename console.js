@@ -98,7 +98,30 @@ window.APRICOT = function() {
   d.id = 'APRICOT'
   d.innerHTML = `${point(config())} points`
 
-  insertAfter(d, getFirstHeaderWithClass(args[0]))
+  const header = getFirstHeaderWithClass(args[0])
+  const headerText = header.innerText
+
+  insertAfter(d, header)
+
+  const result = document.querySelector(`[data-tooltip="${headerText}"]`)
+  const resultId = `ar_${headerText.split(' ').join('_')}`
+  const oResult = document.getElementById(resultId)
+
+  if (oResult) {
+    oResult.parentNode.removeChild(oResult)
+  }
+
+  const dR = document.createElement('div')
+
+  dR.id = resultId
+  dR.style.padding = '2px'
+  dR.style.display = 'inline-block'
+  dR.style.marginRight = '4px'
+  dR.style.backgroundColor = 'green'
+  dR.style.color = 'white'
+  dR.innerHTML = `${point(config())}p`
+
+  result.parentNode.insertBefore(dR, result)
 }
 
 window.APRICOT()
