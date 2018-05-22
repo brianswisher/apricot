@@ -1,7 +1,7 @@
 ((...args)=>{
 
 function config () {
-  return args[0].split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
+  return args[0].body.innerHTML.split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
 }
 
 function point (config) {
@@ -69,6 +69,25 @@ function snap (value) {
   }
 }
 
-console.log(point(config()))
+function getFirstHeaderWithClass (doc) {
+  let header
 
-})(document.body.innerHTML)
+  doc.querySelectorAll('h1')
+    .forEach(h=>{
+      if (!header && h.className && h.className.length) {
+        header = h
+      }
+    })
+
+  return header
+}
+
+function insertAfter(newNode, referenceNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
+}
+
+const d = document.createElement('div'); d.innerHTML = `${point(config())} points`
+
+insertAfter(d, getFirstHeaderWithClass(args[0]))
+
+})(document)
