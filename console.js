@@ -99,11 +99,18 @@ function decorate (d, fitContent, err) {
   if (fitContent) d.style.height = 'fit-content'
 }
 
+function getResult (target) {
+  const targetText = target.innerText
+  const selectorText = targetText.split('"').shift()
+  return document.querySelector(`[data-tooltip^="${selectorText}"]`)
+}
+
 function mkDetailDiv (target) {
   const oldD = document.getElementById('APRICOT')
   const score = point(config())
   const isErr = score === err
   const scoreSuffix = isErr ? '' : ' points'
+  const result = getResult(target)
 
   if (oldD) {
     oldD.parentNode.removeChild(oldD)
@@ -112,7 +119,7 @@ function mkDetailDiv (target) {
   const d = document.createElement('div')
 
   d.id = 'APRICOT'
-  decorate(d, true, isErr)
+  decorate(d, result, isErr)
   d.innerHTML = `${score}${scoreSuffix}`
 
   insertAfter(d, target)
@@ -121,24 +128,27 @@ function mkDetailDiv (target) {
 function mkResultDiv (target) {
   const targetText = target.innerText
   const selectorText = targetText.split('"').shift()
-  const result = document.querySelector(`[data-tooltip^="${selectorText}"]`)
-  const resultId = `id_${escape(targetText)}`
-  const oResult = document.getElementById(resultId)
-  const score = point(config())
-  const isErr = score === err
-  const scoreSuffix = isErr ? '' : 'p'
+  const result = getResult(target)
 
-  if (oResult) {
-    oResult.parentNode.removeChild(oResult)
+  if (result) {
+    const resultId = `id_${escape(targetText)}`
+    const oResult = document.getElementById(resultId)
+    const score = point(config())
+    const isErr = score === err
+    const scoreSuffix = isErr ? '' : 'p'
+
+    if (oResult) {
+      oResult.parentNode.removeChild(oResult)
+    }
+
+    const d = document.createElement('div')
+
+    d.id = resultId
+    decorate(d, null, isErr)
+    d.innerHTML = `${score}${scoreSuffix}`
+
+    result.parentNode.insertBefore(d, result)
   }
-
-  const d = document.createElement('div')
-
-  d.id = resultId
-  decorate(d, null, isErr)
-  d.innerHTML = `${score}${scoreSuffix}`
-
-  result.parentNode.insertBefore(d, result)
 }
 
 window.APRICOT = function() {
