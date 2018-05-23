@@ -1,4 +1,5 @@
 ((...args)=>{
+const err = '✖'
 
 function config () {
   return args[0].body.innerHTML.split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
@@ -6,8 +7,10 @@ function config () {
 
 function point (config) {
   const attrs = config.split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
+  console.log(config.match(':'))
+  const alt = config.match(':') ? 1 : err
   const total = attrs.split(' ')
-   .map(item => tshirt(item)).reduce((total, item) => (item > 1) ? (total + item) : total, 0)
+   .map(item => tshirt(item)).reduce((total, item) => (item > 1) ? (total + item) : total, 0) || alt
 
   return snap(total) || total
 }
@@ -86,11 +89,11 @@ function insertAfter (newNode, referenceNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
-function decorate (d, fitContent) {
-  d.style.padding = '2px'
+function decorate (d, fitContent, err) {
+  d.style.padding = '2px 4px'
   d.style.display = 'inline-block'
   d.style.marginRight = '4px'
-  d.style.backgroundColor = 'green'
+  d.style.backgroundColor = err ? 'red' : 'green'
   d.style.color = 'white'
   d.style.textAlign = 'center'
   if (fitContent) d.style.height = 'fit-content'
@@ -98,6 +101,9 @@ function decorate (d, fitContent) {
 
 function mkDetailDiv (target) {
   const oldD = document.getElementById('APRICOT')
+  const score = point(config())
+  const isErr = score === err
+  const scoreSuffix = isErr ? '' : ' points'
 
   if (oldD) {
     oldD.parentNode.removeChild(oldD)
@@ -106,8 +112,8 @@ function mkDetailDiv (target) {
   const d = document.createElement('div')
 
   d.id = 'APRICOT'
-  decorate(d, true)
-  d.innerHTML = `${point(config())} points`
+  decorate(d, true, isErr)
+  d.innerHTML = `${score}${scoreSuffix}`
 
   insertAfter(d, target)
 }
@@ -118,6 +124,9 @@ function mkResultDiv (target) {
   const result = document.querySelector(`[data-tooltip^="${selectorText}"]`)
   const resultId = `id_${escape(targetText)}`
   const oResult = document.getElementById(resultId)
+  const score = point(config())
+  const isErr = score === err
+  const scoreSuffix = isErr ? '' : 'p'
 
   if (oResult) {
     oResult.parentNode.removeChild(oResult)
@@ -126,8 +135,8 @@ function mkResultDiv (target) {
   const d = document.createElement('div')
 
   d.id = resultId
-  decorate(d)
-  d.innerHTML = `${point(config())}p`
+  decorate(d, null, isErr)
+  d.innerHTML = `${score}${scoreSuffix}`
 
   result.parentNode.insertBefore(d, result)
 }
