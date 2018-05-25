@@ -7,7 +7,7 @@ function config () {
 
 function point (config) {
   const attrs = config.split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
-  const alt = config.match(':') ? 1 : err
+  const alt = config.match(/\/size .:/) ? 1 : err
   const total = attrs.split(' ')
    .map(item => tshirt(item)).reduce((total, item) => (item > 1) ? (total + item) : total, 0) || alt
 
