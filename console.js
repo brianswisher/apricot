@@ -7,7 +7,6 @@ function config () {
 
 function point (config) {
   const attrs = config.split(/\/size /).pop().split('  ').join(' ').split('/').shift().trim()
-  console.log(config.match(':'))
   const alt = config.match(':') ? 1 : err
   const total = attrs.split(' ')
    .map(item => tshirt(item)).reduce((total, item) => (item > 1) ? (total + item) : total, 0) || alt
@@ -101,15 +100,15 @@ function decorate (d, fitContent, err) {
 
 function getResult (target) {
   const targetText = target.innerText
-  const selectorText = targetText.split('"').shift()
+  const selectorText = targetText.split('"').shift().split('|').shift()
   return document.querySelector(`[data-tooltip^="${selectorText}"]`)
 }
 
 function mkDetailDiv (target) {
   const oldD = document.getElementById('APRICOT')
   const score = point(config())
-  const isErr = score === err
-  const scoreSuffix = isErr ? '' : ' points'
+  const isErr = score === err || score > 13
+  const scoreSuffix = score === err ? '' : ' points'
   const result = getResult(target)
 
   if (oldD) {
@@ -134,8 +133,8 @@ function mkResultDiv (target) {
     const resultId = `id_${escape(targetText)}`
     const oResult = document.getElementById(resultId)
     const score = point(config())
-    const isErr = score === err
-    const scoreSuffix = isErr ? '' : 'p'
+    const isErr = score === err || score > 13
+    const scoreSuffix = score === err ? '' : 'p'
 
     if (oResult) {
       oResult.parentNode.removeChild(oResult)
